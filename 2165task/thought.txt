@@ -1,0 +1,153 @@
+I need n-1 disks to be on middle stack so that the nth disk can be on the last stack.
+
+At every step there will always be two other stacks to push onto.
+
+    Also at every step, one stack is going to be considered the placeholder stack which will hold the
+    disk temporarily so that the desired disk can be put onto the destination stack.
+    -   Placeholder stack.
+
+    The target stack is where we want a certain disk to be.
+    -   Target stack.
+
+Example boolean logic:
+
+    If <target disk> needs to be on <whatever stack> then we need to put <target disk minus one> on the other
+    stack.
+
+
+The stack that the disk you are trying to move is on, cannot be considered to be pushed on by another disk.
+
+
+Sometimes when you are trying to move a disk, another disk is in the way.
+This disk can be called the "in-the-way" disk.
+-   In-the-way disk.
+    
+    The In-the-way disk can be on the same stack as the disk you are trying to move ( the disk right above it )
+    or on the target stack that you are trying to put a disk on.
+
+
+We need to isolate a specific stack to put disks on.
+Do we consider the placeholder stack first? Yes. Except when it is the top most disk.
+
+We need to only consider these rules carefully <- Remember
+Rules:
+    1. Only the top most disk can be moved on any stack.
+    2. Bigger disks cannot be put onto smaller disks.
+    3. In-the-way disks cannot be put on top of the stack you are trying to pop off of ( so they must be put on the Placeholder stack ).
+    4. In-the-way disks cannot be put on top of the stack you are trying to push onto ( aka the target stack ).
+
+
+Example process for 3 disks:
+    3 needs to be on the last stack but disk number 2 is the "in-the-way" disk.
+
+    So we need to move disk 2 to a placeholder location which is the second stack but disk number 1 is 
+    the "in-the-way" disk for disk 2.
+
+    So we need to move disk 1 to a placeholder location which is the last stack and nothing is stopping disk 1
+    so we move disk 1 to the last stack.
+
+    And then we move disk 2 to the second stack.
+
+    We try to move disk 3 to the last stack but disk 1 is the "in-the-way" disk and so we move disk 1 to the second stack.
+    
+    We move disk 3 to the last stack.
+
+    Now we need to move disk 2 to the last stack but disk 1 is the "in-the-way" disk and so we move disk 1 to the first stack
+    and put disk 2 on the last stack. 
+    ( we considered rule 4 but this won't work for 4 disks if we carry it up improperly )
+    Ex: 3 needs to go to the last stack and so we can't push in-the-way disks onto the last stack. 
+    This won't work if disk 1 isn't allowed to be on the last stack. 
+    So we need to carefully designate which specific disks cannot be on which stack.
+    A way to solve this would be to say disk 2 cannot be on the last stack ( which preserves our rule ) and that means that disk 2
+    needs to be on the first stack so disk 1 must be on the last stack.
+
+    Now we need disk 1 on the last stack and nothing is stopping it so we move it to the last stack.
+
+
+Example for 4 disks:
+    4 needs to be on the last stack but disk 3 is the in-the-way disk.
+
+    3 cannot be on the target stack which is the last stack so it needs to be on the second stack. Disk 2 is
+    in the way.
+
+    Disk 2 cannot be pushed onto the second stack so it needs to be on the last stack, but Disk 1 is in the way.
+    Disk 1 cannot be on the last stack so it needs to be pushed onto the second stack and nothing is stopping it so it is pushed onto the second stack.
+
+    We put disk 2 on the last stack.
+
+    Disk 3 needs to be on the second stack but disk 1 is in the way, so we put disk 1 on the last stack.
+    (Rule 3-disk1 cannot be put onto the stack that disk 3 is on, and 4-kinda)
+    
+    We put disk 3 on the second stack.
+
+    We need to put disk 4 on the last stack but disk 2 and disk 1 are on the last stack.
+    Disk 2 will be considered to be the "in-the-way" disk.
+
+    Disk 2 cannot be put onto the stack that disk 4 is on (Rule 3), and we need to move disk 2 and put it on
+    the second stack ( because it is the "other stack" ).
+    Disk 1 is in the way of disk 2 so we need to move it to the first stack because disk 1 cannot be on the
+    second stack because disk 2 needs to be put on there (Rule 4).
+
+    Disk 1 goes to stack 1 and Disk 2 goes to the second stack.
+
+    Disk 4 needs to go to the last stack but disk 1 is in the way so disk 1 goes to the second stack.
+    Disk 1 cannot go to the last stack because of Rule 4.
+
+    Disk 1 goes to the second stack. And disk 4 goes to the last stack.
+
+    Now we set new destination objective for disk 3 like we did for Disk 4. Notice how each disk has its own phase. -----------------------------------
+
+    Disk 3 needs to be on the last stack but disk 2 is in the way so it needs to move to the first stack.
+    
+    Disk 1 is in the way of disk 2 so it needs to go to the last stack.
+
+    Disk 1 goes to the last stack and Disk 2 goes to the first stack.
+
+    Disk 3 needs to be on the last stack but Disk 1 is in the way so it needs to be on the first stack.
+
+    Disk 1 goes to the first stack.
+
+    Disk 3 goes to the last stack.
+
+    NEW DESTINATION OBJECTIVE FOR DISK 2.
+
+    Disk 2 needs to be on the last stack ( notice how after each disk we get to the target location the n-1 disk needs to be on the last stack ).
+
+    Disk 1 is in the way of Disk 2 so it goes to the second stack.
+
+    Disk 2 goes to the last stack.
+
+    Disk 1 goes to the last stack.
+
+
+Basically:
+
+    start from the bottom of the stack from which you are trying to pop off of first, and then the stack of which you are trying to push onto ( target stack )
+    
+    if the stack you are trying to pop off has disks on top, then you need to put them where they need to be
+
+
+
+Thoughts but now in order
+
+1. Start from the bottom of stack 1 and push onto a stack of instructions.
+
+2. Need to check if there is another disk on top first then check if there are disks on the "target" stack.
+
+3. If there are disks on top, we need to keep on pushing instructions onto "instuction" stack and work our way up the current stack of disks.
+
+4. Then once we are done working our way up the current stack of disks, we check the "target" stack for any disks in the way. There could be multiple disks in the way or on the target stack.
+
+5. If there are stacks in the way or on the target stack, we also need to work our way up the target stack pushing instructions on the instruction stack.
+
+6. After we are done pushing info onto info stack, we execute the instructions and popping off those instructions off the info stack.
+
+7. After the info stack is of size 0, we move onto the next disk. 
+
+
+Debugging for five disks:
+
+
+    
+2 1  
+5 4 3
