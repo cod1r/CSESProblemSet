@@ -36,10 +36,10 @@ int main(){
         int counter = 0;
         
         while(
-                s.size() > 0 && 
+                s.size() > 0 &&
                 // if "home stack" doesn't have the disk you want to pop off on top
                 (
-                    (stacks[loc[s.top().disk]].back() != d) || 
+                    (stacks[loc[s.top().disk]].back() != d) ||
                 // if the "target stack" has a smaller disk on top or multiple smaller disks on top
                     (stacks[s.top().target].size() > 0 && stacks[s.top().target].back() < s.top().disk)
                 )
