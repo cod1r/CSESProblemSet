@@ -1,57 +1,37 @@
+// taken from 3320 hw chaintenges
 #include <bits/stdc++.h>
-using namespace std;
 
+#define ll long long
+#define MIN_GLOBAL LLONG_MIN
+#define MAX_GLOBAL LLONG_MAX
 
-// brute force solution works but is too slow!
-// void rec(
-//         vector<unsigned long long> weights, 
-//         unsigned long long sum1, 
-//         unsigned long long sum2, 
-//         unsigned long long half, 
-//         unsigned long long sum, 
-//         unsigned long long& diff
-//     ){
-//     if (weights.size() == 0 || sum1 >= half) {
-//         diff = min((sum1-sum2) < 0 ? -1*(sum1-sum2):(sum1-sum2), diff);
-//         return;
-//     }
-//     for (int i = 0; i < weights.size(); i++){
-//         vector<unsigned long long> copy = weights;
-//         copy.erase(copy.begin()+i);
-//         rec(copy, sum1+weights[i], sum-(sum1+weights[i]), half, sum, diff);
-//     }
-// }
-
-long long _min = INT_MAX;
-unordered_set<long long> s;
-void rec(vector<long long> apples, int i, long long sum, long long half){
-    if (i >= apples.size()){
-        if (sum > 2400 && sum < 2500)
-            s.insert(sum);
-        _min = min(abs(half-sum), _min);
-        return;
-    }
-    rec(apples, i+1, sum+apples[i], half);
-    rec(apples, i+1, sum-apples[i], half);
+ll r(std::vector<ll>& arr, std::vector<ll> groups, int index, ll max_val, ll min_val) {
+	if (index >= arr.size() || min_val < max_val) {
+		return max_val;
+	}
+	ll a = MAX_GLOBAL;
+	ll t = MIN_GLOBAL;
+	for (int i = 0; i < (int)groups.size(); i++) {
+		std::vector<ll> copy = groups;
+		copy[i] += arr[index];
+		t = std::max(max_val, copy[i]);
+		a = std::min(a, min_val);
+		a = std::min(a, r(arr, copy, index + 1, t, a));
+	}
+	return a;
 }
 
-int main(){
-    int apples; cin >> apples;
-    if (apples == 1) {
-        printf("%i\n", 0);
-    }
-    if (apples == 1){
-        printf("%d", 1);
-        return 0;
-    }
-    long long sum = 0;
-    vector<long long> weights(apples);
-    for (long long& i : weights){
-        cin >> i;
-        sum += i;
-    }
-    rec(weights, 0, 0, sum/2);
-    for (long long i : s)
-        printf("%lli\n", i);
-    return 0;
+int main() {
+	ll n, k = 2;
+	std::cin >> n;
+	std::vector<ll> arr(n);
+	ll total = 0;
+	for (ll& i : arr) {
+		std::cin >> i;
+		total += i;
+	}
+	ll ans = r(arr, std::vector<ll>(k, 0), 0, MIN_GLOBAL, MAX_GLOBAL);
+	std::cout << abs(total - 2*ans) << std::endl;
+	return 0;
 }
+
